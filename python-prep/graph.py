@@ -64,20 +64,34 @@
 # if __name__=="__main__":
 #     run_graph_demo()
 
-class systemetwork:
-    def __init__(self,is_directed=False):
-        self.adj_list={}
-        self.is_directed=is_directed
+# class systemetwork:
+#     def __init__(self,is_directed=False):
+#         self.adj_list={}
+#         self.is_directed=is_directed
 
-    def add_node(self,node):
-        if node not in self.adj_list:
-            self.adj_list[node]=[]
 
-    def add_edge(u,v):
-        self.add_node(u)
-        self.add_node(v)
+#     def add_node(self,node):
+#         if node not in self.adj_list:
+#             self.adj_list[node]=[]
 
-        self.adj_list[u].append(v)
+#     def add_edge(u,v):
+#         self.add_node(u)
+#         self.add_node(v)
 
-        if not self.is_directed:
-            self.adj_list[v].append(u)
+#         self.adj_list[u].append(v)
+
+#         if not self.is_directed:
+#             self.adj_list[v].append(u)
+
+def influence_metric(network, user_profile):
+    if user_profile not in network:
+        return{"following":0,"followers":0}
+
+    out_degree=len(network.adj_list[user_profile])
+    in_degree=0
+
+    for user,follow_list in network.adj_list.items():
+        if user_profile in follow_list:
+            in_degree+=1
+
+    return{"following":out_degree,"followers":in_degree}
