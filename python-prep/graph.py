@@ -83,15 +83,95 @@
 #         if not self.is_directed:
 #             self.adj_list[v].append(u)
 
-def influence_metric(network, user_profile):
-    if user_profile not in network:
-        return{"following":0,"followers":0}
+# def influence_metric(network, user_profile):
+#     if user_profile not in network:
+#         return{"following":0,"followers":0}
 
-    out_degree=len(network.adj_list[user_profile])
-    in_degree=0
+#     out_degree=len(network.adj_list[user_profile])
+#     in_degree=0
 
-    for user,follow_list in network.adj_list.items():
-        if user_profile in follow_list:
-            in_degree+=1
+#     for user,follow_list in network.adj_list.items():
+#         if user_profile in follow_list:
+#             in_degree+=1
 
-    return{"following":out_degree,"followers":in_degree}
+#     return{"following":out_degree,"followers":in_degree}
+
+# def locate_file(network,current_folder,target_file,visited=None):
+#     if visited is None:
+#         visited=set()
+
+#     if current_folder == target_file:
+#         return True
+
+#     visited.add(current_folder)
+
+#     for neighbor in network.adj_list.get(current_folder, []):
+#         if neighbor not in visited:
+#             if locate_file(network, neighbor, target_file, visited):
+#                 return True
+
+#     return False
+            
+'''Track 'visiting' nodes in the current path vs 'fully_processed'nodes'''
+
+# def cycle_detection(network):
+#     visiting = set()
+#     fully_processed = set()
+
+#     for node in network.adj_list:
+#         if node not in fully_processed:
+#             if _has_cycle(network, node, visiting, fully_processed):
+#                 return True
+
+#     return False
+
+# def _has_cycle(network, node, visiting, fully_processed):
+#     if node in visiting:
+#         return True
+#     if node in fully_processed:
+#         return False
+
+#     visiting.add(node)
+
+#     for neighbor in network.adj_list.get(node, []):
+#         if _has_cycle(network, neighbor, visiting, fully_processed):
+#             return True
+
+#     visiting.remove(node)
+#     fully_processed.add(node)
+#     return False
+
+'''You are designing a CI/CD build engine like Github Actions. Code tests depends on compilation, compilation depends on linting,
+and deployment depends on passing tests.
+You need to calculate the exact order to run these jobs.'''
+from collections import deque
+
+def topological_sort(jobs, dependencies):
+    graph = {job: [] for job in jobs}
+    indegree = {job: 0 for job in jobs}
+
+    
+    for u, v in dependencies:
+        graph[u].append(v)
+        indegree[v] += 1
+
+    q = deque([job for job in jobs if indegree[job] == 0])
+
+    order = []
+
+    while q:
+        curr = q.popleft()
+        order.append(curr)
+
+        for neighbor in graph[curr]:
+            indegree[neighbor] -= 1
+            if indegree[neighbor] == 0:
+                q.append(neighbor)
+
+   
+    if len(order) != len(jobs):
+        return "Cycle detected! No valid execution order."
+
+    return order
+
+
